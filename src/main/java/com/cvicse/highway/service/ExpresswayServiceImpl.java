@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -20,6 +22,8 @@ import java.util.stream.Stream;
 @Service
 public class ExpresswayServiceImpl implements ExpresswayService {
     private final ExpresswayRepository expresswayRepository;
+
+    private final Queue<ExpresswayTollInfo> expresswayTollInfoQueue = new ConcurrentLinkedQueue<>();
 
     public ExpresswayServiceImpl(ExpresswayRepository expresswayRepository) {
         this.expresswayRepository = expresswayRepository;
@@ -36,7 +40,7 @@ public class ExpresswayServiceImpl implements ExpresswayService {
         return filePart.content().flatMap(dataBuffer -> {
             byte[] bytes = new byte[dataBuffer.readableByteCount()];
             dataBuffer.read(bytes);
-            String content = new String(bytes,StandardCharsets.UTF_8);
+            String content = new String(bytes, StandardCharsets.UTF_8);
             return Mono.just(content);
         }).map(this::processAndGetLinesAsList)
                 .flatMapIterable(Function.identity())
@@ -44,12 +48,17 @@ public class ExpresswayServiceImpl implements ExpresswayService {
                 .map(this::saveFile);
     }
 
-    private String saveFile(List<String> strings){
+    private String saveFile(List<String> strings) {
         String s = "";
-        for(String s1:strings){
-            s+= s1;
+        for (String s1 : strings) {
+            s += s1;
         }
         ExpresswayTollInfo expresswayTollInfo = new ExpresswayTollInfo(JSONObject.parseObject(s));
+//        expresswayTollInfoQueue.add(expresswayTollInfo);
+//        if(expresswayTollInfoQueue.size() >50){
+//            expresswayRepository.saveAll(Flux.fromStream(expresswayTollInfoQueue.stream())).subscribe();
+//            expresswayTollInfoQueue.clear();
+//        }
         expresswayRepository.save(expresswayTollInfo).subscribe();
         return "ok";
     }
