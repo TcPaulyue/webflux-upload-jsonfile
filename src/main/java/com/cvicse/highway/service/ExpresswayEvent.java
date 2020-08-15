@@ -3,26 +3,21 @@ package com.cvicse.highway.service;
 import com.cvicse.highway.domain.ExpresswayTollInfo;
 import org.springframework.context.ApplicationEvent;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ExpresswayEvent extends ApplicationEvent {
 
-    private  Queue<ExpresswayTollInfo> expresswayTollInfoQueue = new ConcurrentLinkedQueue<>();
+    private ExpresswayTollInfo expresswayTollInfo;
 
-    public ExpresswayEvent(Object source) {
+    public ExpresswayEvent(Object source,ExpresswayTollInfo expresswayTollInfo) {
         super(source);
+        this.expresswayTollInfo = expresswayTollInfo;
     }
 
-    public Queue<ExpresswayTollInfo> getExpresswayTollInfoQueue() {
-        return expresswayTollInfoQueue;
+    public ExpresswayTollInfo getExpresswayTollInfo() {
+        return expresswayTollInfo;
     }
 
-    public void addExpresswayTollInfo(ExpresswayTollInfo expresswayTollInfo) {
-        this.expresswayTollInfoQueue.add(expresswayTollInfo);
-    }
-
-    public Integer getQueueSize(){
-        return expresswayTollInfoQueue.size();
+    public void setExpresswayTollInfo(ExpresswayTollInfo expresswayTollInfo) {
+        this.expresswayTollInfo = expresswayTollInfo;
     }
 }

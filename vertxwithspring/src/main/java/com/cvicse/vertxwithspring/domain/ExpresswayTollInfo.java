@@ -1,9 +1,10 @@
-package com.cvicse.highway.domain;
+package com.cvicse.vertxwithspring.domain;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
+
 import javax.validation.constraints.NotNull;
 
 @Component

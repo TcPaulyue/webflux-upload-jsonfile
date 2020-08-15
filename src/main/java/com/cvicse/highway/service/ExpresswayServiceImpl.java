@@ -27,8 +27,6 @@ public class ExpresswayServiceImpl implements ExpresswayService {
 
     private final ApplicationContext context;
 
-    private ExpresswayEvent expresswayEvent = new ExpresswayEvent(this);
-
     private final Queue<ExpresswayTollInfo> expresswayTollInfoQueue = new ConcurrentLinkedQueue<>();
 
     public ExpresswayServiceImpl(ExpresswayRepository expresswayRepository, ApplicationContext context) {
@@ -61,7 +59,7 @@ public class ExpresswayServiceImpl implements ExpresswayService {
             s += s1;
         }
         ExpresswayTollInfo expresswayTollInfo = new ExpresswayTollInfo(JSONObject.parseObject(s));
-        expresswayEvent.addExpresswayTollInfo(expresswayTollInfo);
+        ExpresswayEvent expresswayEvent = new ExpresswayEvent(this,expresswayTollInfo);
         context.publishEvent(expresswayEvent);
 //        expresswayTollInfoQueue.add(expresswayTollInfo);
 //        if(expresswayTollInfoQueue.size() >50){
