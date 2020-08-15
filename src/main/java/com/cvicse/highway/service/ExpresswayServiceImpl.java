@@ -4,6 +4,8 @@ package com.cvicse.highway.service;
 import com.alibaba.fastjson.JSONObject;
 import com.cvicse.highway.domain.ExpresswayTollInfo;
 import com.cvicse.highway.repository.ExpresswayRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -23,10 +25,15 @@ import java.util.stream.Stream;
 public class ExpresswayServiceImpl implements ExpresswayService {
     private final ExpresswayRepository expresswayRepository;
 
+    private final ApplicationContext context;
+
+    private ExpresswayEvent expresswayEvent = new ExpresswayEvent(this);
+
     private final Queue<ExpresswayTollInfo> expresswayTollInfoQueue = new ConcurrentLinkedQueue<>();
 
-    public ExpresswayServiceImpl(ExpresswayRepository expresswayRepository) {
+    public ExpresswayServiceImpl(ExpresswayRepository expresswayRepository, ApplicationContext context) {
         this.expresswayRepository = expresswayRepository;
+        this.context = context;
     }
 
 
@@ -54,12 +61,15 @@ public class ExpresswayServiceImpl implements ExpresswayService {
             s += s1;
         }
         ExpresswayTollInfo expresswayTollInfo = new ExpresswayTollInfo(JSONObject.parseObject(s));
+        expresswayEvent.addExpresswayTollInfo(expresswayTollInfo);
+        context.publishEvent(expresswayEvent);
 //        expresswayTollInfoQueue.add(expresswayTollInfo);
 //        if(expresswayTollInfoQueue.size() >50){
 //            expresswayRepository.saveAll(Flux.fromStream(expresswayTollInfoQueue.stream())).subscribe();
 //            expresswayTollInfoQueue.clear();
 //        }
-        expresswayRepository.save(expresswayTollInfo).subscribe();
+
+       // expresswayRepository.save(expresswayTollInfo).subscribe();
         return "ok";
     }
 
