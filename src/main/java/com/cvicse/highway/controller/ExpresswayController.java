@@ -30,29 +30,6 @@ public class ExpresswayController {
         this.gridFsTemplate = gridFsTemplate;
     }
 
-    @GetMapping("/tweets")
-    public Flux<ExpresswayTollInfo> getAllInfo() {
-        return expresswayRepository.findAll();
-    }
-
-    @PostMapping("/tweets")
-    public Mono<ExpresswayTollInfo> createExpresswayInfo(@RequestBody JSONObject content) {
-        ExpresswayTollInfo expresswayTollInfo = new ExpresswayTollInfo(content);
-        return expresswayRepository.save(expresswayTollInfo);
-    }
-
-//    @PostMapping(value = "/upload-mono", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-//    @ResponseStatus(value = HttpStatus.OK)
-//    public Mono<List<String>> upload(@RequestPart("file") Mono<FilePart> filePartMono) {
-//        /*
-//          To see the response beautifully we are returning strings as Mono List
-//          of String. We could have returned Flux<String> from here.
-//          If you are curious enough then just return Flux<String> from here and
-//          see the response on Postman
-//         */
-//        return expresswayService.getLines(filePartMono).collectList();
-//    }
-
     @PostMapping(value = "/upload-filePart", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public Mono<String> upload(@RequestPart("file") FilePart filePart) {
